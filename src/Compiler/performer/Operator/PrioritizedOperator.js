@@ -12,9 +12,6 @@ export class PrioritizedOperator extends Expression {
 
     apply(node) {
         this.replaceWithParent();
-        // if (this.children.length > this.constructor.capacity) {//TODO check
-        //     return this.getParentContext().apply(node);
-        // }
         super.apply(node);
         return node;
     }

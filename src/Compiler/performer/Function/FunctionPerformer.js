@@ -1,4 +1,3 @@
-import { XpathNode } from "../XpathNode";
 import { Arguments } from "./Arguments";
 import { Expression } from "../Expression/Expression";
 

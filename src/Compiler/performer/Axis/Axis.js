@@ -7,7 +7,7 @@ import { TagFilter } from "../Filter/TagFilter";
 export class Axis extends NodeSetPerformer {
 
     getNodeSetList(nodeSet) {
-        return [...nodeSet].reduce((resp, node) => resp.concat(this.process(node) || []), []);
+        return [...nodeSet].reduce((resp, node) => resp.concat(this.process(node, nodeSet) || []), []);
     }
 
     apply(node) {

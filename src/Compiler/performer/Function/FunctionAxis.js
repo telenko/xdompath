@@ -7,7 +7,12 @@ export class FunctionAxis extends XpathNode {
         nodeSetList.forEach(nodeSet => {
             newNodeSetList.push(this.shadowRoot.perform(nodeSet));
         });
-        return newNodeSetList;
+        if (!this.children.length) {
+            return newNodeSetList;
+        }
+        return [...this.children].reduce((acc, childPerformer) => {
+            return acc.concat(childPerformer.perform(newNodeSetList));
+        }, []);
     }
 
 }

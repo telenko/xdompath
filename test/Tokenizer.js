@@ -1,6 +1,6 @@
 import { XpathTokenizer } from '../src/Tokenizer/XpathTokenizer';
 
-const XPATH_TEST = './/div/span[@tori="test-2+"]/parent::/textarea';
+const XPATH_TEST =  `.//div/span[@tori='test-2+'][contains('12',   'e-43'  )  ]/parent::/textarea`;
 
 describe('tokenizer', function() {
     it('should generate tokens', function() {
@@ -34,10 +34,33 @@ describe('tokenizer', function() {
         expect(token.value).to.be.equal('equal');
         token = tokenizer.next();
         expect(token.rule).to.be.undefined;
-        expect(token.value).to.be.equal('"test-2+"');
+        expect(token.value).to.be.equal(`'test-2+'`);
         token = tokenizer.next();
         expect(token.rule).to.be.equal(']');
         expect(token.value).to.be.equal('filter-close');
+
+        token = tokenizer.next();
+        expect(token.rule).to.be.equal('[');
+        expect(token.value).to.be.equal('filter-open');
+        token = tokenizer.next();
+        expect(token.rule).to.be.equal('contains(');
+        expect(token.value).to.be.equal('contains-open');
+        token = tokenizer.next();
+        expect(token.rule).to.be.undefined;
+        expect(token.value).to.be.equal(`'12'`);
+        token = tokenizer.next();
+        expect(token.rule).to.be.equal(',');
+        expect(token.value).to.be.equal(`comma`);
+        token = tokenizer.next();
+        expect(token.rule).to.be.undefined;
+        expect(token.value).to.be.equal(`'e-43'`);
+        token = tokenizer.next();
+        expect(token.rule).to.be.equal(`)`);
+        expect(token.value).to.be.equal(`close`);
+        token = tokenizer.next();
+        expect(token.rule).to.be.equal(']');
+        expect(token.value).to.be.equal('filter-close');
+
         expect(tokenizer.hasNext()).to.be.true;
         token = tokenizer.next();
         expect(token.rule).to.be.equal('/parent::');

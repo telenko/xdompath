@@ -103,7 +103,7 @@ describe('compiler', function() {
         <div> <span>test</span> <span>2</span> </div>  <div> <span>test22</span> <span>2333</span> </div>
         `;
         let response = compiler.process(container);
-        expect(response.length).to.be.equal(8);
+        expect(response.length).to.be.equal(9);
 
         compiler = new Compiler(new XpathTokenizer(`.//div[contains(string(), '2')]`));
         compiler.compile();
@@ -164,6 +164,221 @@ describe('compiler', function() {
         containerDiv.shadowRoot.innerHTML = `<div><span class='testclass-3 2'>1</span><div class='testclass'><span class='testclass-3 3'>2</span></div></div>`;
         let response = compiler.process(container);
         expect(response.length).to.be.equal(3);
+    });
+
+    it('should get following nodes after finded node', function() {
+        let container = document.createElement('li');
+        let compiler = new Compiler(new XpathTokenizer(`.//div/span[@test='2']/following-sibling::span`));
+        compiler.compile();
+        container.innerHTML = `
+        <div id='with-shadow'>
+            <span test='2'>3</span>
+            <span test='3'>4</span>
+            <span test='2'>5</span>
+            <span>6</span>
+            <p>t</p>
+        </div>
+        `;
+        const withShadow = container.querySelector('#with-shadow');
+        withShadow.attachShadow({ mode: 'open' });
+        withShadow.shadowRoot.innerHTML = `
+        <span test='2'>
+            <div>
+                <span test='3'>7</span>
+                <span test='2'>3</span>
+                <span test='3'>4</span>
+                <span test='2'>5</span>
+                <div>test</div>
+            </div>        
+        </span>
+        `;
+        let response = compiler.process(container);
+        expect(response.length).to.be.equal(5);
+    });
+
+    it('should get following nodes', function() {
+        let container = document.createElement('li');
+        container.innerHTML = `
+        <div>
+            <span test='2'>
+                <div id='with-shadow'>
+                    <span test='2'>12</span>
+                    <span test='3'>14</span>
+                    <span test='2'>15</span>
+                    <span>6</span>
+                    <p>t</p>
+                </div>
+                <span>
+                    <div>
+                        <span></span>
+                        <span></span>
+                        <p></p>
+                    </div>
+                </span>
+            </span>
+            <span>11</span>
+        </div>
+        `;
+        const withShadow = container.querySelector('#with-shadow');
+        withShadow.attachShadow({ mode: 'open' });
+        withShadow.shadowRoot.innerHTML = `
+        <span test='2'>
+            <div>
+                <span test='3'>7</span>
+                <span test='2'>3</span>
+                <span test='3'>4</span>
+                <span test='2'>5</span>
+                <div>test</div>
+            </div>
+            <span></span>       
+        </span>
+        <span>13</span>
+        `;
+
+        let compiler = new Compiler(new XpathTokenizer(`.//div/span[@test='2']/following::span`));
+        compiler.compile();
+        let response = compiler.process(container);
+        expect(response.length).to.be.equal(12);
+
+        compiler = new Compiler(new XpathTokenizer(`.//shadow()/span[@test='2']/following::span`));
+        compiler.compile();
+        response = compiler.process(container);
+        expect(response.length).to.be.equal(9);
+
+        compiler = new Compiler(new XpathTokenizer(`.//shadow()//span[@test='2']/following::span`));
+        compiler.compile();
+        response = compiler.process(container);
+        expect(response.length).to.be.equal(12);
+    });
+
+    it('should get ancestor nodes', function() {
+        let container = document.createElement('li');
+        container.innerHTML = `
+        <div>
+            <span test='2'>
+                <div id='with-shadow'>
+                    <span test='2'>3</span>
+                    <span test='3'>4</span>
+                    <span test='2'>5</span>
+                    <span>6</span>
+                    <p>t</p>
+                </div>
+                <span>
+                    <div>
+                        <span test='4'></span>
+                        <span></span>
+                        <p></p>
+                    </div>
+                </span>
+            </span>
+            <span>11</span>
+        </div>
+        `;
+        const withShadow = container.querySelector('#with-shadow');
+        withShadow.attachShadow({ mode: 'open' });
+        withShadow.shadowRoot.innerHTML = `
+        <span test='2'>
+            <div>
+                <span test='3'>7</span>
+                <span test='2'>3</span>
+                <span test='3'>4</span>
+                <span test='6'>5</span>
+                <div>test</div>
+            </div>
+            <span></span>       
+        </span>
+        <span>13</span>
+        `;
+
+        let compiler = new Compiler(new XpathTokenizer(`.//span[@test='4']/ancestor::div`));
+        compiler.compile();
+        let response = compiler.process(container);
+        expect(response.length).to.be.equal(2);
+
+        compiler = new Compiler(new XpathTokenizer(`.//span[@test='6']/ancestor::div`));
+        compiler.compile();
+        response = compiler.process(container);
+        expect(response.length).to.be.equal(3);
+
+        compiler = new Compiler(new XpathTokenizer(`.//shadow()//span[contains(string(), '13')]/ancestor::div`));
+        compiler.compile();
+        response = compiler.process(container);
+        expect(response.length).to.be.equal(2);
+
+        compiler = new Compiler(new XpathTokenizer(`.//shadow()//span[contains(string(), '13')]/ancestor-or-self::span`));
+        compiler.compile();
+        response = compiler.process(container);
+        expect(response.length).to.be.equal(2);
+    });
+
+    it('should check precending axes', function() {
+        let container = document.createElement('li');
+        container.innerHTML = `
+        <div>
+            <span test='2'>
+                <div id='with-shadow'>
+                    <span test='2'>3</span>
+                    <span test='3'>4</span>
+                    <span test='2'>5</span>
+                    <span>6</span>
+                    <p>t</p>
+                </div>
+                <span>
+                    <div>
+                        <span test='4'></span>
+                        <span></span>
+                        <p></p>
+                    </div>
+                </span>
+            </span>
+            <span>11</span>
+        </div>
+        `;
+        const withShadow = container.querySelector('#with-shadow');
+        withShadow.attachShadow({ mode: 'open' });
+        withShadow.shadowRoot.innerHTML = `
+        <span test='2'>
+            <div>
+                <span test='3'>7</span>
+                <span test='2'>3</span>
+                <span test='3'>4</span>
+                <span test='6'>5</span>
+                <div>test</div>
+            </div>
+            <span></span>       
+        </span>
+        <span>13</span>
+        `;
+
+        let compiler = new Compiler(new XpathTokenizer(`.//span[@test='2']/preceding-sibling::span`));
+        compiler.compile();
+        let response = compiler.process(container);
+        expect(response.length).to.be.equal(3);
+
+        compiler = new Compiler(new XpathTokenizer(`.//span[string()='13']/preceding::span`));
+        compiler.compile();
+        response = compiler.process(container);
+        expect(response.length).to.be.equal(7);
+    });
+
+    it('should verify not() function', function() {
+        let container = document.createElement('li');
+        container.innerHTML = `
+        <div>
+            <span test='2'>
+                text-testing
+            </span>
+        </div>
+        `;
+        let compiler = new Compiler(new XpathTokenizer(`.//span[not(contains(string(), 'text-testing'))]`));
+        compiler.compile();
+        let response = compiler.process(container);
+        expect(response.length).to.be.equal(0);
+        
+        compiler = new Compiler(new XpathTokenizer(`.//span[@test='2'][contains(string(), 'text-testing')]`));
+        compiler.compile();
+        response = compiler.process(container);
+        expect(response.length).to.be.equal(1);
     });
 
 });

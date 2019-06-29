@@ -2,7 +2,7 @@ import { XpathNode } from "../XpathNode";
 
 export class Combiner extends XpathNode {
 
-    perform(nodeSetList) {//TODO refactor to reuse common code
+    perform(nodeSetList) {
         if (!this.children.length) {
             return nodeSetList;
         }

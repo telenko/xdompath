@@ -3,20 +3,22 @@ import { StringStream } from '@telenko/string-stream';
 const TYPES = [
     { type: "path", rule: '/', value: "down" },
     { type: "path", rule: '//', value: "down-recursive" },
+    { type: "path", rule: '/..', value: "parent" },
     { type: "path", rule: '.', value: "current" },
     { type: "path", rule: '*', value: "all-current" },
     { type: "path", rule: '|', value: "union" },
 
     { type: "relation", rule: '/child::', value: "child" },
     { type: "relation", rule: '/child-not-shadow::', value: "child-not-shadow" },
-    { type: "relation", rule: '/shadow::', value: "shadow" },
     { type: "relation", rule: '/parent::', value: "parent" },
     { type: "relation", rule: '/following-sibling::', value: "following-sibling" },
     { type: "relation", rule: '/preceding-sibling::', value: "preceding-sibling" },
     { type: "relation", rule: '/following::', value: "following" },
     { type: "relation", rule: '/preceding::', value: "preceding" },
+    { type: "relation", rule: '/descendant::', value: "descendant" },
     { type: "relation", rule: '/descendant-or-self::', value: "descendant-or-self" },
     { type: "relation", rule: '/ancestor-or-self::', value: "ancestor-or-self" },
+    { type: "relation", rule: '/ancestor::', value: "ancestor" },
     
     { type: "group", rule: '(', value: "open" },
     { type: "group", rule: ')', value: "close" },
@@ -47,7 +49,6 @@ const TYPES = [
     { type: "filter", rule: '[', value: 'filter-open' },
     { type: "filter", rule: ']', value: 'filter-close' },
     { type: "filter", rule: '@', value: 'attribute' },
-    // { type: "filter", rule: '', value: 'class' },
 
     // { type: OPERATOR, rule: ' mod ', value: 'mod' },//???
     { type: "operator", rule: '=', value: 'equal' },
@@ -98,7 +99,7 @@ function readToken(token) {
     if (token && token.bracketOpen) {
         const value = this[STREAM].next();
         if (value === token.bracketOpen) {
-            token.type.value += value;
+            applyChar(token, value);
             token.ready = true;
             this[STREAM].next();//pointer next
             return prepareDynamicToken(token);
@@ -119,34 +120,49 @@ function readToken(token) {
         if (this[STREAM].isCompleted()) {
             return prepareDynamicToken(token);
         }
-        token.type.value += (this[STREAM].next() || "");
+        applyChar(token, this[STREAM].next());
         return readToken.call(this, token);
     }
 
     if (!tokenResp && !token) {
-        token = { type: { type: "string", value: this[STREAM].read() }, ready: false };
-        if (token.type.value === "'" || token.type.value === '"') {
-            token.bracketOpen = token.type.value;
-        }
+        token = { type: { type: "string", value: '' }, ready: false };
+        applyChar(token, this[STREAM].read());
         return readToken.call(this, token);
     }
 
     if (tokenResp && token && !token.ready) {
         this[STREAM].moveBack(tokenResp.type.rule.length);
         token.type.value = token.type.value.substring(0, token.type.value.length - 1);
-        return prepareDynamicToken(token);
+        token = prepareDynamicToken(token);
+        if (typeof token.type.value === "string" && !token.type.value.trim()) {
+            return readToken.call(this);
+        }
+        return token;
     }
 
     return tokenResp;
 }
 
+function applyChar(token, char) {
+    if (typeof char !== "string") {
+        return;
+    }
+    if (!token.type.value || !token.type.value.trim()) {
+        if (char === `"` || char === `'`) {
+            token.bracketOpen = char;
+        }
+    }
+    token.type.value += char;
+}
+
 function prepareDynamicToken(token) {
     token.ready = true;
-    if (Number.isInteger(+token.type.value)) {
+    const trimmedValue = token.type.value.trim();
+    if (trimmedValue !== "" && Number.isInteger(+trimmedValue)) {
         token.type.value = +token.type.value;
         token.type.type = "integer";
     } else {
-        token.type.value = token.type.value.trim();
+        token.type.value = trimmedValue;
         token.type.type = "string";
     }
     return token;

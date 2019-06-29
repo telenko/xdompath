@@ -13,23 +13,9 @@ export class CombinerHost extends XpathNode {
         }, []);
     }
 
-    // apply(node) {
-    //     if (!this.shadowRoot) {
-    //         checkCreateShadow.call(this);
-    //         return this.shadowRoot.apply(node);
-    //     }
-    //     return super.apply(node);
-    // }
-
     getContext() {
         this.attachShadow(new Grouper());//TODO support other combiner-s
         return this.shadowRoot;
     }
 
 }
-
-// function checkCreateShadow() {
-//     if (!this.shadowRoot) {
-//         this.attachShadow(new Grouper());//TODO support other combiner-s
-//     }
-// }

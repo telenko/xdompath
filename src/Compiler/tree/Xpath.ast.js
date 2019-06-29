@@ -4,14 +4,14 @@ import { FunctionPerformer } from "../performer/Function/FunctionPerformer";
 import { XpathNode } from "../performer/XpathNode";
 import { FilterExpression } from "../performer/Filter/FilterExpression";
 import { CombinerHost } from "../performer/Combiner/CombinerHost";
+import { FunctionAxis } from "../performer/Function/FunctionAxis";
 
 const ROOT = Symbol();
 const CURRENT = Symbol();
 const CHILDREN = Symbol();
-// const PARENT = Symbol();
 export class XpathAST {
 
-    apply(item) {//TODO refactor!!!!        //append??
+    apply(item) {
         if (!(item instanceof XpathNode)) {
             return;
         }
@@ -22,41 +22,6 @@ export class XpathAST {
         }
 
         this[CURRENT] = this[CURRENT].apply(item);
-        // this[CURRENT] = item.applyTo(this[CURRENT]);
-
-        // if (this[CURRENT] instanceof PrioritizedOperator && this[CURRENT].children.length > this[CURRENT].constructor.capacity) {
-        //     this.up();
-        // }
-
-        // if (this[CURRENT] instanceof Axis && item instanceof FunctionPerformer) {
-        //     const funcAxis = new FunctionAxis();
-        //     this[CURRENT].append(funcAxis);
-        //     funcAxis.attachShadow(item);
-        // } else if (item instanceof PrioritizedOperator) {
-        //     this[CURRENT].replaceWith(item);
-        // } else if (this[CURRENT] instanceof AttributeOperator) {
-        //     this[CURRENT].attachShadow(item);
-        // } else {
-        //     this[CURRENT].append(item); 
-        // }
-        // this[CURRENT] = item;
-        
-        // if (item instanceof FunctionPerformer || item instanceof CombinerHost || item instanceof FilterExpression) {
-        //     let shadowRoot;
-        //     if (item instanceof FunctionPerformer) {
-        //         shadowRoot = new Arguments();
-        //     } else if (item instanceof FilterExpression) {
-        //         shadowRoot = new Expression();
-        //     } else {
-        //         shadowRoot = new Grouper();
-        //     }
-        //     item.attachShadow(shadowRoot);
-        //     this[CURRENT] = shadowRoot;
-        // }
-    }
-
-    upContext() {
-        this[CURRENT] = this[CURRENT].getParentContext();
     }
 
     process(node) {
@@ -129,7 +94,13 @@ export class XpathAST {
 
     upUntilGroup() {
         this.upUntilHost();
-        if ((this.current instanceof CombinerHost) || (this.current instanceof FunctionPerformer)) {
+        if (this.current instanceof CombinerHost) {
+            return;
+        }
+        if (this.current instanceof FunctionPerformer) {
+            if (this.current.host instanceof FunctionAxis) {
+                this.upUntilHost();
+            }
             return;
         }
         this.upUntilGroup();

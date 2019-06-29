@@ -14,6 +14,14 @@ import { AttributeOperator } from "./performer/Operator/AttributeOperator";
 import { Equalizer } from "./performer/Operator/Equalizer";
 import { ShadowNodes } from "./performer/Function/ShadowNodes";
 import { ClassFunction } from "./performer/Function/ClassFunction";
+import { FollowingSibling } from "./performer/Axis/FollowingSibling";
+import { Following } from "./performer/Axis/Following";
+import { ChildRecursiveOrSelf } from "./performer/Axis/ChildRecursiveOrSelf";
+import { AncestorAxis } from "./performer/Axis/AncestorAxis";
+import { AncestorOrSelf } from "./performer/Axis/AncestorOrSelf";
+import { Precending } from "./performer/Axis/Precending";
+import { PrecendingSibling } from "./performer/Axis/PrecendingSibling";
+import { NotFunction } from "./performer/Function/NotFunction";
 
 const TOKENIZER = Symbol();
 const TREE = Symbol();
@@ -32,17 +40,20 @@ export class Compiler {
             switch(token.type) {
                 case "path": {
                     switch(token.value) {
-                        case "down":
-                        case "child": {
+                        case "down": {
                             this[TREE].apply(new ChildAxis());
                             break;
                         }
                         case "down-recursive": {
-                            this[TREE].apply(new ChildRecursiveAxis());
+                            this[TREE].apply(new ChildRecursiveOrSelf());
                             break;
                         }
                         case "current": {
                             this[TREE].apply(new CurrentAxis());
+                            break;
+                        }
+                        case "parent": {
+                            this[TREE].apply(new ParentAxis());
                             break;
                         }
                     }
@@ -50,8 +61,44 @@ export class Compiler {
                 }
                 case "relation": {
                     switch(token.value) {
+                        case "child": {
+                            this[TREE].apply(new ChildAxis());
+                            break;
+                        }
                         case "parent": {
                             this[TREE].apply(new ParentAxis());
+                            break;
+                        }
+                        case "following-sibling": {
+                            this[TREE].apply(new FollowingSibling());
+                            break;
+                        }
+                        case "following": {
+                            this[TREE].apply(new Following());
+                            break;
+                        }
+                        case "descendant": {
+                            this[TREE].apply(new ChildRecursiveAxis());
+                            break;
+                        }
+                        case "descendant-or-self": {
+                            this[TREE].apply(new ChildRecursiveOrSelf());
+                            break;
+                        }
+                        case "ancestor": {
+                            this[TREE].apply(new AncestorAxis());
+                            break;
+                        }
+                        case "ancestor-or-self": {
+                            this[TREE].apply(new AncestorOrSelf());
+                            break;
+                        }
+                        case "preceding": {
+                            this[TREE].apply(new Precending());
+                            break;
+                        }
+                        case "preceding-sibling": {
+                            this[TREE].apply(new PrecendingSibling());
                             break;
                         }
                     }
@@ -85,7 +132,6 @@ export class Compiler {
                             break;
                         }
                         case "close": {
-                            //this[TREE].upContext();
                             this[TREE].upUntilGroup();
                             break;
                         }
@@ -93,15 +139,7 @@ export class Compiler {
                     break;
                 }
                 case "string": {
-                    // if (this[TREE].current instanceof Axis) {//todo refactor and move to tree
-                        // this[TREE].apply(new TagFilter());
                     this[TREE].apply(new StaticExpression(token.value));
-                    // } else if (this[TREE].current instanceof AttributeOperator) {
-                        // this[TREE].current.attachShadow(new StaticExpression(token.value));
-                    // } else {
-                        // const makedString = token.value.substring(1, token.value.length - 1);
-                        // this[TREE].apply(new StaticExpression(makedString));
-                    // }//todo refactor
                     break;
                 }
                 case "function": {
@@ -116,6 +154,10 @@ export class Compiler {
                         }
                         case "contains-open": {
                             this[TREE].apply(new Contains());
+                            break;
+                        }
+                        case "not-open": {
+                            this[TREE].apply(new NotFunction());
                             break;
                         }
                         case "shadow-open": {

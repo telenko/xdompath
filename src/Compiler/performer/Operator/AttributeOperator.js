@@ -16,12 +16,4 @@ export class AttributeOperator extends Expression {
         return super.apply(node);
     }
 
-    // append(node) {
-    //     if (this.shadowRoot) {
-    //         super.append(node);
-    //         return;
-    //     }
-    //     this.attachShadow(node);
-    // }
-
 }

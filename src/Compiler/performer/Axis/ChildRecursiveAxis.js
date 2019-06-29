@@ -1,4 +1,5 @@
 import { Axis } from "./Axis";
+import { DomAccess } from "../../../DomAccess";
 
 export class ChildRecursiveAxis extends Axis {
 
@@ -10,13 +11,9 @@ export class ChildRecursiveAxis extends Axis {
 
 function getNodeSetList(node) {
     let list = [];
-    const response = new Set();
-    node.childNodes.forEach(chNode => response.add(chNode));
-    if (node.shadowRoot) {
-        response.add(node.shadowRoot);
-    }
-    list.push([...response]);
-    if (response.size) {
+    const response = DomAccess.getChildNodes(node);
+    list.push(response);
+    if (response.length) {
         response.forEach(chNode => {
             list = list.concat(getNodeSetList.call(this, chNode));
         });

@@ -10,7 +10,16 @@ export class FunctionPerformer extends Expression {
     perform(node, nodeSet) {
         checkCreateShadow.call(this);
         this.node = node;
-        const args = this.shadowRoot.perform(node, nodeSet) || [];
+        let args = this.shadowRoot.perform(node, nodeSet) || [];
+        const { types } = this.constructor;
+        if (types && types.length > 0) {
+            args = args.map((arg, i) => {
+                if (types[i]) {
+                    return types[i].parse(arg);
+                }
+                return arg;
+            });
+        }
         return this.process(...args);
     }
 
@@ -24,6 +33,10 @@ export class FunctionPerformer extends Expression {
         return Infinity;
     }
 
+    static get types() {
+        return [];
+    }
+
 }
 
 function checkCreateShadow() {
@@ -31,3 +44,13 @@ function checkCreateShadow() {
         this.attachShadow(new Arguments());
     }
 }
+
+/**
+ * 
+ * @compile({ token: "contains-open" })
+ * @func({ argsSize: 2, types: [ StringType, StringType ] })
+ * function contains(str1, str2) {
+ *      return str1.includes(str2);
+ * }
+ * 
+ */

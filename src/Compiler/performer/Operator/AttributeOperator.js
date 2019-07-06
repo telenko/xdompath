@@ -1,6 +1,7 @@
 import { Expression } from '../Expression/Expression';
-import { XpathNode } from '../XpathNode';
+import { compile } from '../../decorator/compile';
 
+@compile({ type: "filter", value: "attribute" })
 export class AttributeOperator extends Expression {
 
     perform(node) {

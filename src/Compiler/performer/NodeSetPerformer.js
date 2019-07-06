@@ -1,4 +1,3 @@
-// import { Performer } from "./Performer";
 import { XpathNode } from "./XpathNode";
 
 export class NodeSetPerformer extends XpathNode {

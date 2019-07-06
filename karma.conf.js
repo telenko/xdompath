@@ -22,7 +22,15 @@ module.exports = config => {
             'src/**/*.js': [ 'webpack' ]
         },
         webpack: {
-          mode: "development"
+          mode: "development",
+          module: {
+              rules: [
+                  {
+                      test: /\.js$/,
+                      loader: 'babel-loader'
+                  }
+              ]
+          }
         },
         webpackMiddleware: {
           // webpack-dev-middleware configuration

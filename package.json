@@ -1,6 +1,6 @@
 {
   "name": "@telenko/xdompath",
-  "version": "0.0.2-beta",
+  "version": "0.0.3-beta",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -24,6 +24,7 @@
   "devDependencies": {
     "@babel/core": "^7.4.4",
     "@babel/node": "^7.2.2",
+    "@babel/plugin-proposal-decorators": "^7.4.4",
     "babel-loader": "^8.0.5",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "chai": "^4.2.0",

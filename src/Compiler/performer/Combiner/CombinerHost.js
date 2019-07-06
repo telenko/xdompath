@@ -1,6 +1,8 @@
 import { XpathNode } from '../XpathNode';
 import { Grouper } from './Grouper';
+import { compile } from '../../decorator/compile';
 
+@compile({ type: "group", value: "open" })
 export class CombinerHost extends XpathNode {
 
     perform(nodeSetList) {

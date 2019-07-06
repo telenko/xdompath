@@ -59,4 +59,8 @@ export class DomAccess {
         return node.parentNode || node.host;
     }
 
+    static getNodeContent(node) {
+        return node.nodeType === 3 ? node.textCotent : node.innerHTML;
+    }
+
 }

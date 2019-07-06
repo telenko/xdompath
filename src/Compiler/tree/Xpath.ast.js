@@ -111,7 +111,7 @@ export class XpathAST {
         if (this.current instanceof FilterExpression) {
             return;
         }
-        this.upUntilGroup();
+        this.upUntilFilter();
     }
 
     get currentAxis() {

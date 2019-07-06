@@ -2,6 +2,10 @@ import { XpathTokenizer } from './Tokenizer/XpathTokenizer';
 import { Compiler } from './Compiler/Compiler';
 
 const TREE = Symbol();
+/**
+ * const xdompath = new XDomPath('.//div')
+ * const foundItems = xdompath.perform(document.body);
+ */
 export class XDomPath {
 
     constructor(query) {
@@ -13,7 +17,7 @@ export class XDomPath {
         return this[TREE].process(node);
     }
 
-    defineFunction() {
+    static defineFunction() {
         //TODO
     }
 

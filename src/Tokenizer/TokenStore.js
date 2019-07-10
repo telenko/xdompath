@@ -23,8 +23,10 @@ export const STORE = [
 
     { type: "function", rule: 'text(', value: 'text-open' },
     { type: "function", rule: 'position(', value: 'position-open' },
+    { type: "function", rule: 'last(', value: 'last-open' },
     { type: "function", rule: 'not(', value: 'not-open' },
     { type: "function", rule: 'name(', value: 'name-open' },
+    { type: "function", rule: 'id(', value: 'id-open' },
     { type: "function", rule: 'string(', value: 'string-open' },
     { type: "function", rule: 'substring(', value: 'substring-open' },
     { type: "function", rule: 'substring-after(', value: 'substring-after-open' },
@@ -43,6 +45,8 @@ export const STORE = [
 
     { type: "function", rule: 'shadow(', value: 'shadow-open' },
     { type: "function", rule: 'class(', value: 'class-open' },
+    { type: "function", rule: 'focusable(', value: "focusable-open" },
+   
 
     { type: "filter", rule: '[', value: 'filter-open' },
     { type: "filter", rule: ']', value: 'filter-close' },

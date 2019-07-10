@@ -2,6 +2,7 @@ import { Expression } from "../Expression/Expression";
 import { Axis } from "../Axis/Axis";
 import { DomAccess } from "../../../DomAccess";
 import { compile } from "../../decorator/compile";
+import { NodeSubSetListType } from "../../type/NodeSubSetListType";
 
 @compile({ type: "path", value: "current" })
 export class DotOperator extends Expression {
@@ -11,17 +12,14 @@ export class DotOperator extends Expression {
     }
 
     perform(arg) {
-        let node;
-        if (Array.isArray(arg) && arg.length === 1 && arg[0] && arg[0].length === 1) {
-            node = arg[0][0];
-        } else {
-            node = arg;
-        }
-
+        const nodeSubSetList = NodeSubSetListType.parse(arg);
         if (this.children.length > 0 && this.children[0] instanceof Axis) {
-            return Axis.prototype.perform.call(this, [[node]]);
+            return Axis.prototype.perform.call(this, nodeSubSetList);
         }
-        return DomAccess.getNodeContent(node);
+        if (nodeSubSetList.length > 0 && nodeSubSetList[0].length > 0) {
+            return DomAccess.getNodeContent(nodeSubSetList[0][0]);
+        }
+        return "";
     }
 
     getNodeSetList(...args) {

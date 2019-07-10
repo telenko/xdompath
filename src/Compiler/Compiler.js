@@ -40,7 +40,7 @@ export class Compiler {
                     break;
                 }
                 case "integer": {
-                    this[TREE].apply(new StaticExpression(token.value));
+                    this[TREE].apply(new StaticExpression(token));
                     break;
                 }
                 case "group": {
@@ -53,7 +53,7 @@ export class Compiler {
                     break;
                 }
                 case "string": {
-                    this[TREE].apply(new StaticExpression(token.value));
+                    this[TREE].apply(new StaticExpression(token));
                     break;
                 }
                 case "operator": {

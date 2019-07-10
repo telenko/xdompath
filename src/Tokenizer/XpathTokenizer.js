@@ -106,6 +106,9 @@ function prepareDynamicToken(token) {
     } else {
         token.type.value = trimmedValue;
         token.type.type = "string";
+        if (token.bracketOpen) {
+            token.type.brackets = true;
+        }
     }
     return token;
 }

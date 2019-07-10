@@ -1,30 +1,23 @@
 import { Expression } from "./Expression";
-import { Axis } from "../Axis/Axis";
-import { TagFilter } from "../Filter/TagFilter";
 
 export class StaticExpression extends Expression {
 
     constructor(...args) {
         super(...args);
-        this.val = checkAndRemoveBrackets(args[0]);
+        this.val = checkAndRemoveBrackets(args[0].value);
+        this.withBrackets = !!args[0].brackets;
     }
 
     perform() {
         return this.val;
     }
 
-    applyTo(parent) {
-        if (parent instanceof Axis) {
-            const tagFilter = new TagFilter();
-            parent.append(tagFilter);
-            tagFilter.append(this);
-            return this;
-        }
-        return super.applyTo(parent);
-    }
-
     static get capacity() {
         return 0;
+    }
+
+    get type() {
+        return `static:${typeof this.val}`;//duck checking needed
     }
 
 }

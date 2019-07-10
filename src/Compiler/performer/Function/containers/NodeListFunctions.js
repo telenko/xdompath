@@ -17,4 +17,18 @@ export class NodeListFunctions {
         return nodes.filter(node => node.nodeType === 3);
     }
 
+    @compile({ type: "function", value: "count-open" })
+    @func({ types: [NodeListType] })
+    count(nodes) {
+        return nodes.length;
+    }
+
+    @compile({ type: "function", value: "focusable-open" })
+    @func({ type: NodeListFunction, types: [NodeListType] })
+    focusable(nodes) {
+        const focusable = ["input", "textarea", "select", "button"]
+        return nodes.filter(node => {
+            return focusable.some(tag => node.tagName && node.tagName.toLowerCase() === tag);
+        });
+    }
 }

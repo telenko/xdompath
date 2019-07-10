@@ -1,9 +1,10 @@
 import { XpathNode } from "./XpathNode";
+import { NodeSubSetListType } from "../type/NodeSubSetListType";
 
 export class NodeSetPerformer extends XpathNode {
 
-    perform(nodeSetList) {
-        return nodeSetList.reduce((resp, nodeSet) => {
+    perform(arg) {
+        return NodeSubSetListType.parse(arg).reduce((resp, nodeSet) => {
             return resp.concat(buildNodeSetList.call(this, nodeSet));
         }, []);
     }

@@ -16,4 +16,10 @@ export class NodeFunctions {
         return this.node.classList.contains(className);
     }
 
+    @compile({ type: "function", value: "id-open" })
+    @func({ argsCapacity: 0 })
+    id() {
+        return this.node.getAttribute("id");
+    }
+
 }

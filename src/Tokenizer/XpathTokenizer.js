@@ -47,6 +47,8 @@ function readToken(token) {
             return prepareDynamicToken(token);
         }
         this[STREAM].moveBack(1);
+    } else if (token && token.type.type === "string" && this[STREAM].isFollowing('-')) {
+        //nothing to do...
     } else if (!this[STREAM].isCompleted()) {
         TYPES.some(type => {
             const hasType = this[STREAM].isFollowing(type.rule);

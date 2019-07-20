@@ -80,28 +80,28 @@ console.log(psWithClass.length);//1
 1) All XPATH axes
 2) Function list:
 -    text()
--     position()
--     last()
--     not()
--     name() -- planned, but not supported for now
--     id() -- planned, but not supported for now
--     string()
--     substring()
--     substring-after()
--     substring-before()
--     string-length()
--     count()
--     concat() -- planned, but not supported for now
--     normalize-space()
--     starts-with()
--     contains()
--     translate() -- planned, but not supported for now 
--     ceiling() -- planned, but not supported for now 
--     floor() -- planned, but not supported for now 
--     round() -- planned, but not supported for now 
--     sum() -- planned, but not supported for now 
+-    position()
+-    last()
+-    not()
+-    name() -- planned, but not supported for now
+-    id() -- planned, but not supported for now
+-    string()
+-    substring()
+-    substring-after()
+-    substring-before()
+-    string-length()
+-    count()
+-    concat()
+-    normalize-space()
+-    starts-with()
+-    contains()
+-    translate() -- planned, but not supported for now
+-    ceiling()
+-    floor()
+-    round()
+-    sum() -- planned, but not supported for now
 
-   ** new XDomPath functions:**
+   **new XDomPath functions:**
 
 -    shadow() -- returns nodes which are instances of ShadowRoot
 -    class() -- receives string and returns true if node has class
@@ -116,6 +116,18 @@ console.log(psWithClass.length);//1
 ```Javascript
          new XDomPath('(.//div)[0]');//will work
          new XDomPath('.//div[(position() < 3)]');//won't work
+```
+6) NodeList -> String type conversion for now works by different algorithm:
+```Javascript
+    list[#text, #text, #text] -> list[0].textContent;//only 1st item's textContent
+```
+
+### Dist folder
+Dist folder contains of 2 compiled js files:
+-    xdompath.min.js - compiled version of XDomPath
+-    xdompath.global.min.js - compiled version, but auto-pushed to global window scope as
+```Javascript
+    window.XDomPath
 ```
 
 ### Current issues

@@ -6,7 +6,7 @@ module.exports = env => {
             xdompath: "./src/index.js",
             "xdompath.global": "./globalScoping.js"
         },
-        devtool: "sourcemap",
+        devtool: isDev ? "sourcemap" : "",
         optimization: {
             minimize: !isDev
         },

@@ -70,4 +70,10 @@ export class StringFunctions {
         return str.trim().replace(/\s+/g, ' ');
     }
 
+    @compile({ type: "function", value: "concat-open" })
+    @func({ types: [StringType, StringType], argsCapacity: 2 })
+    concat(str1, str2) {
+        return str1.concat(str2);
+    }
+
 }

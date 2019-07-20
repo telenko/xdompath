@@ -1,6 +1,6 @@
 import { XpathTokenizer } from '../src/Tokenizer/XpathTokenizer';
 
-const XPATH_TEST =  `.//div/span[@tori='test-2+'][contains('12',   'e-43'  )  ]/parent::/textarea`;
+const XPATH_TEST =  `.//div/some-custom-element[@tori='test-2+'][contains('12',   'e-43'  )  ]/parent::/textarea/another-ele-with-dashes`;
 
 describe('tokenizer', function() {
     it('should generate tokens', function() {
@@ -19,7 +19,7 @@ describe('tokenizer', function() {
         expect(token.value).to.be.equal('down');
         token = tokenizer.next();
         expect(token.rule).to.be.undefined
-        expect(token.value).to.be.equal('span');
+        expect(token.value).to.be.equal('some-custom-element');
         token = tokenizer.next();
         expect(token.rule).to.be.equal('[');
         expect(token.value).to.be.equal('filter-open');
@@ -71,6 +71,12 @@ describe('tokenizer', function() {
         token = tokenizer.next();
         expect(token.rule).to.be.undefined;
         expect(token.value).to.be.equal('textarea');
+        token = tokenizer.next();
+        expect(token.rule).to.be.equal('/');
+        expect(token.value).to.be.equal('down');
+        token = tokenizer.next();
+        expect(token.rule).to.be.undefined;
+        expect(token.value).to.be.equal('another-ele-with-dashes');
 
         //end
         token = tokenizer.next();

@@ -1,6 +1,6 @@
 {
   "name": "@telenko/xdompath",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -17,9 +17,16 @@
   ],
   "author": "Andrii Telenko",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/telenko/xdompath.git"
+  },
+  "bugs": {
+    "url": "https://github.com/telenko/xdompath/issues"
+  },
+  "homepage": "https://github.com/telenko/xdompath#readme",
   "dependencies": {
-    "@telenko/string-stream": "1.0.1",
-    "esm": "^3.2.22"
+    "@telenko/string-stream": "1.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.4.4",

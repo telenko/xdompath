@@ -7,7 +7,7 @@ describe('contains() function', function() {
         let compiler;
         let response;
         let container = document.createElement('li');
-        compiler = new Compiler(new XpathTokenizer(`.//[contains(string(), '2')]`));
+        compiler = new Compiler(new XpathTokenizer(`.//*[contains(string(), '2')]`));
         compiler.compile();
         container.innerHTML = `
         <div> <span>test</span> <span>2</span> </div>  <div> <span>test22</span> <span>2333</span> </div>
